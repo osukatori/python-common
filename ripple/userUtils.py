@@ -18,7 +18,7 @@ def logUserLog(log, fileMd5, userID, gameMode, scoreid):
 	:param gameMode: GameMode
 	:param scoreid: ScoreID or Play ID
 	"""
-	glob.db.execute(f"INSERT INTO users_logs (user, log, time, game_mode, beatmap_md5) VALUES ({userID}, '{log}'', {int(time.time())}, {gameMode}, '{fileMd5}')")
+	glob.db.execute(f"INSERT INTO users_logs (user, log, time, game_mode, beatmap_md5, scoreid) VALUES ({userID}, '{log}'', {int(time.time())}, {gameMode}, '{fileMd5}', {scoreid})")
 	return True
 
 def getUserStats(userID, gameMode):
