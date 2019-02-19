@@ -7,6 +7,7 @@ from common.constants import privileges
 from common.log import logUtils as log
 from common.ripple import passwordUtils, scoreUtils
 from objects import glob
+import datetime
 
 def logUserLog(log, fileMd5, userID, gameMode, scoreid):
 	"""
@@ -18,7 +19,26 @@ def logUserLog(log, fileMd5, userID, gameMode, scoreid):
 	:param gameMode: GameMode
 	:param scoreid: ScoreID or Play ID
 	"""
-	glob.db.execute(f"INSERT INTO users_logs (user, log, time, game_mode, beatmap_md5, scoreid) VALUES ({userID}, '{log}'', {int(time.time())}, {gameMode}, '{fileMd5}', {scoreid})")
+	glob.db.execute(f"INSERT INTO users_logs (user, log, time, game_mode, beatmap_md5, scoreid) VALUES ({userID}, '{log}', {int(time.time())}, {gameMode}, '{fileMd5}', {scoreid})")
+	return True
+
+def updateGraph(userID, new_pp, mode):
+	'''
+	(Beta) User Graphs
+
+	:param userID: users ID
+	:param new_pp: new user pps
+	'''
+
+	today = datetime.date.today().strftime('%Y-%m-%d')
+	stats_today = glob.db.fetch(f"SELECT user_id, day, pp FROM user_ticks_graph WHERE user_id = {userID} AND day = '{today}' AND mode = {mode}")
+	if not stats_today or not 'user_id' in stats_today:
+		# Creating record
+		glob.db.execute(f"INSERT INTO user_ticks_graph (user_id, day, pp, mode, type) VALUES ({userID}, '{today}', {new_pp}, {mode}, 'pp_graph')")
+		return True
+
+	#Update record
+	glob.db.execute(f"UPDATE user_ticks_graph SET pp = {new_pp} WHERE user_id = {userID} AND day = '{today}' AND mode = {mode}")
 	return True
 
 def getUserStats(userID, gameMode):
@@ -307,6 +327,7 @@ def updatePP(userID, gameMode):
 	newPP = calculatePP(userID, gameMode)
 	mode = scoreUtils.readableGameMode(gameMode)
 	glob.db.execute("UPDATE users_stats SET pp_{}=%s WHERE id = %s LIMIT 1".format(mode), [newPP, userID])
+	updateGraph(userID, newPP, gameMode)
 
 def updateStats(userID, __score):
 	"""
