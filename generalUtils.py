@@ -157,7 +157,7 @@ def readableMods(__mods):
 	if __mods & mods.RELAX > 0:
 		r += "RX"
 	if __mods & mods.RELAX2 > 0:
-		r += "RX2"
+		r += "AP"
 
 	return r
 
