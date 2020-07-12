@@ -97,6 +97,10 @@ def getBeatmap(id):
 		return None
 	return getBeatmapSet(setID)
 
+def getBeatmapSetMD5(md5):
+	glob.dog.increment(glob.DATADOG_PREFIX + ".cheesegull_requests", tags=["cheesegull:beatmap"])
+	return cheesegullRequest("md5/{}".format(md5))
+
 def updateBeatmap(setID):
 	# This has been deprecated
 	return
