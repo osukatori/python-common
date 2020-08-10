@@ -150,6 +150,8 @@ def checkLogin(userID, password, ip=""):
 	banchoSession = False
 	if ip != "":
 		banchoSession = checkBanchoSession(userID, ip)
+		if not banchoSession:
+			return False
 
 	# Return True if there's a bancho session for this user from that ip
 	if banchoSession:
