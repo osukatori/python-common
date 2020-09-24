@@ -1199,7 +1199,7 @@ def updateTotalHits(userID=0, gameMode=gameModes.STD, newHits=0, score=None):
 		gameMode = score.gameMode
 		userID = score.playerUserID
 	glob.db.execute(
-		"UPDATE users_stats SET total_hits_{gm} = total_hits_{gm} + %s WHERE id = %s LIMIT 1"
+		"UPDATE users_stats SET total_hits_{gm} = total_hits_{gm} + %s WHERE id = %s LIMIT 1".format(
 			gm=gameModes.getGameModeForDB(gameMode)
 		),
 		(newHits, userID)
